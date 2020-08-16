@@ -30,6 +30,30 @@ const books = [
     {id: 8, name: 'No one knows it all', authorId: 3},
 ];
 
+const RootMutationType = new GraphQLObjectType({
+    name: "Mutation",
+    description: "Root Mutation",
+    // Todo: create functionality to add author
+    // Todo: create functionality to update author
+    // Todo: create functionality to delete author
+    fields: () => ({
+        addBook: {
+            type: BookType,
+            description: "Add a book",
+            args: {
+                name: {type: GraphQLNonNull(GraphQLString)},
+                authorId: {type: GraphQLNonNull(GraphQLInt)}
+            },
+            resolve: (parent, args) => {
+                const book = {id: books.length + 1, name: args.name, authorId: args.authorId };
+                books.push(book);
+                return book;
+            }
+        },
+    }),
+});
+
+
 const AuthorType = new GraphQLObjectType({
     name: 'Author',
     description: 'This represent an Author of a book',
@@ -93,6 +117,7 @@ const RootQueryType = new GraphQLObjectType({
 
 const schema = new GraphQLSchema({
     query: RootQueryType,
+    mutation: RootMutationType,
 })
 
 const app = express();
